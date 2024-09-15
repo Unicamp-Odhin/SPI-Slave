@@ -1,4 +1,4 @@
-module SPI_slave (
+module SPI_Slave (
     input wire clk,
     input wire rst,
 
@@ -18,27 +18,26 @@ module SPI_slave (
 
 reg [7:0] data_in_reg;
 reg [2:0] bit_count;
-reg miso_reg;
 
 always @(posedge clk) begin
     if(rst == 1'b1) begin
         data_in_reg <= 8'b0;
     end else begin
-        if(data_in_valid == 1'b1) begin
+        if(data_in_valid == 1'b1 && cs == 1'b1) begin
             data_in_reg <= data_in;
         end
     end
 end
 
-always @(posedge sclk ) begin
+always @(posedge sck) begin
     if(rst == 1'b1) begin
-        miso_reg <= 1'b0;
+        miso <= 1'b0;
         bit_count <= 3'b0;
     end else begin
         if(cs == 1'b0) begin
             data_out_valid <= 1'b0;
 
-            miso_reg <= data_in_reg[7];
+            miso <= data_in_reg[7];
             data_in_reg <= {data_in_reg[6:0], 1'b0};
             
             bit_count <= bit_count + 1'b1;
