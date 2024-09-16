@@ -39,7 +39,7 @@ SPI_Slave U1(
     .data_out_valid(data_out_valid),
     .busy          (busy),
 
-    .data_in (8'h55),
+    .data_in (counter),
     .data_out(leds)
 );
 
