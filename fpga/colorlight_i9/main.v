@@ -47,6 +47,8 @@ SPI_Slave U1(
 );
 
 always @(posedge clk ) begin
+    busy_sync <= {busy_sync[1:0], busy};
+
     if(busy_posedge == 1'b1) begin
         data_in_valid <= 1'b1;
         counter <= counter + 1'b1;
