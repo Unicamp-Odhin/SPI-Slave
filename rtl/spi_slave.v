@@ -12,7 +12,7 @@ module SPI_Slave (
     output wire busy,
 
     input wire [7:0] data_in,
-    output reg [7:0] data_out,
+    output reg [7:0] data_out
 );
 
 
@@ -48,7 +48,7 @@ always @(posedge sck) begin
                 data_out_valid <= 1'b1;
             end
         end else begin
-            miso_reg <= 1'b0;
+            miso <= 1'b0;
             bit_count <= 3'b000;
         end
     end
