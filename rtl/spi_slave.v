@@ -9,7 +9,7 @@ module SPI_Slave (
     
     input wire data_in_valid,
     output reg data_out_valid,
-    output wire busy,
+    output reg busy,
 
     input wire [7:0] data_in,
     output reg [7:0] data_out
@@ -42,6 +42,14 @@ always @(posedge clk ) begin
             bit_count <= bit_count + 1'b1;
             data_out <= {data_out[6:0], mosi_sync[1]};
         end    
+    end
+
+    if(start_message == 1'b1) begin
+        busy <= 1'b0;
+    end
+
+    if(end_message == 1'b1) begin
+        busy <= 1'b1;
     end
 end
 
@@ -81,6 +89,5 @@ assign falling_edge  = (sck_sync[2:1] == 2'b10) ? 1'b1 : 1'b0;
 assign cs_active     = ~cs_sync[1];
 assign start_message = (cs_sync[2:1] == 2'b10) ? 1'b1 : 1'b0; // message starts in cs falling edge
 assign end_message   = (cs_sync[2:1] == 2'b01) ? 1'b1 : 1'b0; // message ends in cs rising edge
-assign busy          = cs_sync[1];
 
 endmodule

@@ -16,8 +16,11 @@ module top (
 
 wire [7:0] leds;
 reg [7:0] counter;
+reg [2:0] busy_sync;
 reg data_in_valid;
-wire rst, busy, data_out_valid;
+wire rst, busy, data_out_valid, busy_posedge;
+
+assign busy_posedge = (busy_sync[2:1] == 2'b01) ? 1'b1 : 1'b0;
 
 ResetBootSystem #(
     .CYCLES(20)
@@ -44,9 +47,9 @@ SPI_Slave U1(
 );
 
 always @(posedge clk ) begin
-    counter <= counter + 1'b1;
-    if(busy == 1'b1) begin
+    if(busy_posedge == 1'b1) begin
         data_in_valid <= 1'b1;
+        counter <= counter + 1'b1;
     end else begin
         data_in_valid <= 1'b0;
     end
