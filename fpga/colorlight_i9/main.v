@@ -10,13 +10,14 @@ module top (
     input wire mosi,
     output wire miso,
 
-    output wire [7:0]led,
+    output reg [7:0]led,
     inout [1:0]gpios
 );
 
+wire [7:0] leds;
 reg [7:0] counter;
 reg data_in_valid;
-wire rst;
+wire rst, busy, data_out_valid;
 
 ResetBootSystem #(
     .CYCLES(20)
@@ -35,22 +36,23 @@ SPI_Slave U1(
     .miso(miso),
 
     .data_in_valid (data_in_valid),
-    .data_out_valid(),
-    .busy          (),
+    .data_out_valid(data_out_valid),
+    .busy          (busy),
 
     .data_in (8'h55),
-    .data_out(led)
+    .data_out(leds)
 );
 
 always @(posedge clk ) begin
-    data_in_valid <= 1'b0;
-    if(rst == 1'b1) begin
-        counter <= 8'h00;
+    counter <= counter + 1'b1;
+    if(busy == 1'b1) begin
+        data_in_valid <= 1'b1;
     end else begin
-        if(cs == 1'b1) begin
-            counter <= counter + 1'b1;
-            data_in_valid <= 1'b1;
-        end
+        data_in_valid <= 1'b0;
+    end
+
+    if(data_out_valid == 1'b1) begin
+        led <= ~leds;
     end
 end
 
