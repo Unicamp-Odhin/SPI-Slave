@@ -10,8 +10,10 @@ module top (
     input wire mosi,
     output wire miso,
 
-    output reg [7:0]led,
-    inout [1:0]gpios
+    input wire rw,
+    output wire intr,
+
+    output reg [7:0]led
 );
 
 wire [7:0] leds;
@@ -49,16 +51,20 @@ SPI_Slave U1(
 always @(posedge clk ) begin
     busy_sync <= {busy_sync[1:0], busy};
 
-    if(busy_posedge == 1'b1) begin
-        data_in_valid <= 1'b1;
-        counter <= counter + 1'b1;
+    if(reset == 1'b1) begin
+        couter <= 8'h00;
     end else begin
-        data_in_valid <= 1'b0;
-    end
-
-    if(data_out_valid == 1'b1) begin
-        led <= ~leds;
+        if(busy_posedge == 1'b1) begin
+            data_in_valid <= 1'b1;
+            counter <= counter + 1'b1;
+        end else begin
+            data_in_valid <= 1'b0;
+        end
+        if(data_out_valid == 1'b1) begin
+            led <= ~leds;
+        end
     end
 end
 
 endmodule
+

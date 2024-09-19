@@ -63,7 +63,7 @@ end
 
 always @(posedge clk ) begin
     if(rst == 1'b1) begin
-        data_in_reg <= 8'h55;
+        data_in_reg <= 8'h00;
     end else begin
         if(data_in_valid == 1'b1) begin
             data_in_reg <= data_in;
