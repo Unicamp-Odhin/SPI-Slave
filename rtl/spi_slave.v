@@ -1,4 +1,6 @@
-module SPI_Slave (
+module SPI_Slave #(
+    parameter SPI_BITS_PER_WORD = 8
+)(
     input wire clk,
     input wire rst,
 
@@ -11,12 +13,12 @@ module SPI_Slave (
     output reg data_out_valid,
     output reg busy,
 
-    input wire [7:0] data_in,
-    output reg [7:0] data_out
+    input wire [SPI_BITS_PER_WORD-1:0] data_in,
+    output reg [SPI_BITS_PER_WORD-1:0] data_out
 );
 
 
-reg [7:0] data_in_reg, data_to_send;
+reg [SPI_BITS_PER_WORD-1:0] data_in_reg, data_to_send;
 reg [2:0] bit_count;
 reg [2:0] sck_sync, cs_sync; // 3-bit shift register to slk and cs sync
 reg [1:0] mosi_sync;
