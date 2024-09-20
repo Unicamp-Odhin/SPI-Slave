@@ -1,21 +1,30 @@
 module top (
     input wire clk,
+    input wire reset,
     input wire [0:0] btn,
+
     input wire rx,
     output wire tx,
+
     output wire [3:0] led,
-    output wire [7:0] jc,
+    output reg [7:0] jc,
+
     input wire cs,
     input wire mosi,
     input wire sck,
-    input wire reset,
     output wire miso,
-    output wire int
+
+    input wire rw,
+    output wire intr
 );
 
-wire rst;
+wire [7:0] leds;
 reg [7:0] counter;
+reg [2:0] busy_sync;
 reg data_in_valid;
+wire rst, busy, data_out_valid, busy_posedge;
+
+assign busy_posedge = (busy_sync[2:1] == 2'b01) ? 1'b1 : 1'b0;
 
 ResetBootSystem #(
     .CYCLES(20)
@@ -34,23 +43,30 @@ SPI_Slave U1(
     .miso(miso),
 
     .data_in_valid (data_in_valid),
-    .data_out_valid(),
-    .busy          (),
+    .data_out_valid(data_out_valid),
+    .busy          (busy),
 
-    .data_in (8'h55),
-    .data_out(jc)
+    .data_in (counter),
+    .data_out(leds)
 );
 
 always @(posedge clk ) begin
-    data_in_valid <= 1'b0;
-    if(rst == 1'b1) begin
+    busy_sync <= {busy_sync[1:0], busy};
+
+    if(reset == 1'b1) begin
         counter <= 8'h00;
     end else begin
-        if(cs == 1'b1) begin
-            counter <= counter + 1'b1;
+        if(busy_posedge == 1'b1) begin
             data_in_valid <= 1'b1;
+            counter <= counter + 1'b1;
+        end else begin
+            data_in_valid <= 1'b0;
+        end
+        if(data_out_valid == 1'b1) begin
+            jc <= ~leds;
         end
     end
 end
+
 
 endmodule

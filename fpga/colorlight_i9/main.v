@@ -52,7 +52,7 @@ always @(posedge clk ) begin
     busy_sync <= {busy_sync[1:0], busy};
 
     if(reset == 1'b1) begin
-        couter <= 8'h00;
+        counter <= 8'h00;
     end else begin
         if(busy_posedge == 1'b1) begin
             data_in_valid <= 1'b1;
