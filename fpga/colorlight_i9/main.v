@@ -16,8 +16,8 @@ module top (
     output reg [7:0]led
 );
 
-wire [18:0] leds;
-reg [18:0] counter;
+wire [7:0] leds;
+reg [7:0] counter;
 reg [2:0] busy_sync;
 reg data_in_valid;
 wire rst, busy, data_out_valid, busy_posedge;
