@@ -1,6 +1,6 @@
-read_verilog "main.v"
-read_verilog ../../debug/reset.v
-read_verilog ../../rtl/spi_slave.v
+read_verilog -sv main.sv
+read_verilog -sv ../../debug/reset.sv
+read_verilog -sv ../../rtl/spi_slave.sv
 
 read_xdc "digilent_arty.xdc"
 

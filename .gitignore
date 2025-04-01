@@ -5,3 +5,4 @@ rtl/spi2.v
 fpga/digilent_arty_a7/clockInfo.txt
 clockInfo.txt
 fpga/digilent_arty_a7/clockInfo.txt
+reports/

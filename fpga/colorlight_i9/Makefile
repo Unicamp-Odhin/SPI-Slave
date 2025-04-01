@@ -10,11 +10,11 @@ all: ./build/out.bit
 		--speed 6 --lpf-allow-unconstrained --report ./build/report_timing.json \
 		--detailed-timing-report 
 
-./build/out.json: main.v pinout.lpf buildFolder
+./build/out.json: main.sv pinout.lpf buildFolder
 	yosys -p " \
-		read_verilog main.v; \
-		read_verilog ../../debug/reset.v; \
-		read_verilog ../../rtl/spi_slave.v; \
+		read_verilog -sv main.sv; \
+		read_verilog -sv ../../debug/reset.sv; \
+		read_verilog -sv ../../rtl/spi_slave.sv; \
 		synth_ecp5 -json ./build/out.json -abc9 \
 	"
 
