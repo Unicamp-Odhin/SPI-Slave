@@ -60,6 +60,7 @@ logic [BIT_COUNT_WIDTH   - 1:0] bit_count;
 logic [2:0] sck_sync, cs_sync; // 3-bit shift register to slk and cs sync
 logic [1:0] mosi_sync;
 logic rising_edge, falling_edge, cs_active, start_message, end_message;
+logic sampling_edge, shifting_edge;
 
 always_ff @(posedge clk ) begin
     if(!rst_n) begin
@@ -77,9 +78,9 @@ always_ff @(posedge clk ) begin
     if(!cs_active) begin
         bit_count <= {BIT_COUNT_WIDTH{1'b0}};
     end else begin
-        if(rising_edge) begin
+        if(sampling_edge) begin
             bit_count <= bit_count + 1'b1;
-            data_out <= {data_out[SPI_BITS_PER_WORD-2:0], mosi_sync[1]};
+            data_out  <= {data_out[SPI_BITS_PER_WORD-2:0], mosi_sync[1]};
         end    
     end
 
@@ -96,7 +97,7 @@ always_ff @(posedge clk ) begin
     if(!rst_n) begin
         data_out_valid <= 1'b0;
     end else begin
-        data_out_valid <= cs_active && rising_edge 
+        data_out_valid <= cs_active && sampling_edge 
             && (bit_count == SPI_BITS_PER_WORD - 1);;
     end
 end
@@ -116,7 +117,7 @@ always_ff @(posedge clk ) begin
         if(start_message) begin
             data_to_send <= data_in_reg;
         end else begin
-            if(rising_edge) begin
+            if(shifting_edge) begin
                 data_to_send <= {data_to_send[SPI_BITS_PER_WORD-2:0], 1'b0};
             end
         end
@@ -129,5 +130,11 @@ assign falling_edge  = ~sck_sync[1] & sck_sync[2]; // SCK falling edge
 assign cs_active     = ~cs_sync[1];
 assign start_message = ~cs_sync[1] & cs_sync[2]; // message starts in cs falling edge
 assign end_message   = ~cs_sync[2] & cs_sync[1]; // message ends in cs rising edge
+// SPI mode edge selection
+assign sampling_edge = (CPHA == 0) ? (CPOL ? falling_edge : rising_edge)
+                                    : (CPOL ? rising_edge  : falling_edge);
+
+assign shifting_edge = (CPHA == 0) ? (CPOL ? rising_edge  : falling_edge)
+                                    : (CPOL ? falling_edge : rising_edge);
 
 endmodule

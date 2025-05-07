@@ -8,3 +8,5 @@ fpga/digilent_arty_a7/clockInfo.txt
 reports/
 .Xil/
 fpga/nexys4_ddr/.Xil/top_propImpl.xdc
+fpga/nexys4_ddr/usage_statistics_webtalk.html
+fpga/nexys4_ddr/usage_statistics_webtalk.xml
