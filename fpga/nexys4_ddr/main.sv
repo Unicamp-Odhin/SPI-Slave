@@ -26,13 +26,14 @@ module top (
     input  logic M_DATA      // Dados do microfone
 );
 
-logic [7:0] counter, leds;
+logic [15:0] counter, leds;
 logic [2:0] busy_sync;
 logic data_in_valid, busy, data_out_valid, busy_posedge;
 
 
 SPI_Slave #(
-    .SPI_BITS_PER_WORD (8)
+    .SPI_BITS_PER_WORD (16),
+    .SPI_MODE          (0)
 ) U1(
     .clk            (clk),
     .rst_n          (CPU_RESETN),
@@ -63,7 +64,8 @@ always_ff @(posedge clk ) begin
             data_in_valid <= 1'b0;
         end
         if(data_out_valid) begin
-            LED <= {leds, 8'h00};
+            //LED <= {leds, 8'h00};
+            LED <= leds;
         end
     end
 end

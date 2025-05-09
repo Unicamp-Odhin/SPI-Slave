@@ -33,7 +33,8 @@ ResetBootSystem #(
 );
 
 SPI_Slave #(
-    .SPI_BITS_PER_WORD (8)
+    .SPI_BITS_PER_WORD (8),
+    .SPI_MODE          (1)
 ) U1(
     .clk            (clk),
     .rst_n          (rst_n),
