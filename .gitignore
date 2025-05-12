@@ -10,3 +10,4 @@ reports/
 fpga/nexys4_ddr/.Xil/top_propImpl.xdc
 fpga/nexys4_ddr/usage_statistics_webtalk.html
 fpga/nexys4_ddr/usage_statistics_webtalk.xml
+fpga/opensourceSDRLabKintex7/openFPGALoader
